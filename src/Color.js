@@ -1,11 +1,14 @@
 import React from "react";
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, Redirect } from "react-router-dom"
 
 
 function Color({ colors }) {
   const { color } = useParams();
   
-  let hex = colors.find( c => c.name === color)["hex"];
+  let colorObj = colors.find( c => c.name === color);
+  let hex = colorObj?.hex;
+  // let hex = colorObj && colorObj.hex;
+  if(!hex) return <Redirect to="/colors" />;
 
   return (
     <div className="Color" style={{backgroundColor: hex}}>

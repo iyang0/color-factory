@@ -1,29 +1,42 @@
-import {BrowserRouter, Route, Redirect} from "react-router-dom";
+import {BrowserRouter, Switch, Route, Redirect} from "react-router-dom";
 import ColorsList from "./ColorsList";
 import Color from "./Color";
 import AddColorForm from "./AddColorForm";
+import { useState } from "react";
 
-function App({colors}) {
+function App({defaultColors}) {
+  const [colors, setColors] = useState(defaultColors);
+
+  function updateColors(color){
+    setColors( colors => {
+      let colorsCopy = [...colors];
+      colorsCopy.push(color);
+      return colorsCopy;
+    });
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
-        <Route exact path="/colors">
-          <ColorsList colors={colors} />
-        </Route>
-        <Route exact path="/colors/:color">
-          <Color colors={colors} />
-        </Route>
-        <Route exact path="/colors/new">
-          <AddColorForm />
-        </Route>
-        <Redirect to="/colors" />
+        <Switch>
+          <Route exact path="/colors">
+            <ColorsList colors={colors} />
+          </Route>
+          <Route exact path="/colors/new">
+            <AddColorForm addColor={updateColors}/>
+          </Route>
+          <Route exact path="/colors/:color">
+            <Color colors={colors} />
+          </Route>
+          <Redirect to="/colors" />
+        </Switch>
       </BrowserRouter>
     </div>
   );
 }
 
 App.defaultProps ={
-  colors : [
+  defaultColors : [
     { name: "red", hex: "red"}, 
     { name: "green", hex: "green"},
     { name: "blue", hex: "blue"}, 
